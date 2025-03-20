@@ -1,3 +1,5 @@
+"""qllama - an alternative to ollama with low-level model access."""
+
 import sys
 
 if sys.version_info[:2] >= (3, 8):
@@ -14,3 +16,9 @@ except PackageNotFoundError:  # pragma: no cover
     __version__ = "unknown"
 finally:
     del version, PackageNotFoundError
+
+# Import main classes for easier access
+from qllama.models import get_model_handler
+from qllama.terminal import QllamaTerminal
+
+__all__ = ["get_model_handler", "QllamaTerminal"]
