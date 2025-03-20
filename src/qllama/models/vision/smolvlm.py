@@ -3,6 +3,7 @@
 import logging
 from typing import Dict, List, Any, Optional
 import os
+import sys
 
 import torch
 from transformers import AutoProcessor, AutoModelForImageTextToText
@@ -28,6 +29,16 @@ class SmolVLMHandler(BaseModelHandler):
         super().__init__(model_name=model_name, **kwargs)
         self.torch_dtype = kwargs.get("torch_dtype", torch.bfloat16)
         self.attn_implementation = kwargs.get("attn_implementation", "flash_attention_2")
+        
+        # Check if PIL is properly installed
+        try:
+            from PIL import Image
+        except ImportError as e:
+            if "_imaging" in str(e):
+                _logger.error("PIL is not properly installed. This is usually caused by missing dependencies.")
+                _logger.error("Try reinstalling pillow with: pip uninstall -y pillow && pip install --no-cache-dir pillow")
+                raise ImportError("PIL is not properly installed. Try 'pip uninstall -y pillow && pip install --no-cache-dir pillow'") from e
+            raise
         
     def load_model(self) -> None:
         """Load the SmolVLM model and processor."""

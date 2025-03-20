@@ -10,6 +10,15 @@ from pathlib import Path
 
 _logger = logging.getLogger(__name__)
 
+# Verify PIL is properly installed at module import time
+try:
+    from PIL import Image
+except ImportError as e:
+    if "_imaging" in str(e):
+        _logger.error("PIL is not properly installed. This is usually caused by missing dependencies.")
+        _logger.error("Try reinstalling pillow with: pip uninstall -y pillow && pip install --no-cache-dir pillow")
+    raise
+
 def is_url(path_or_url: str) -> bool:
     """Check if a string is a URL.
     
@@ -35,8 +44,6 @@ def load_image(path_or_url: str) -> Any:
         A loaded image object (PIL Image or as required by the model)
     """
     try:
-        from PIL import Image
-        
         if is_url(path_or_url):
             _logger.debug(f"Loading image from URL: {path_or_url}")
             response = requests.get(path_or_url, stream=True)

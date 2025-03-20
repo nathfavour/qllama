@@ -3,6 +3,7 @@
 import argparse
 import logging
 import sys
+import os
 from typing import List, Optional
 
 from qllama import __version__
@@ -85,18 +86,44 @@ def main(args: List[str]) -> None:
     _logger.debug("Starting qllama...")
     
     if parsed_args.command == "run":
-        term = QllamaTerminal(
-            model_name=parsed_args.model,
-            device=parsed_args.device,
-            temperature=parsed_args.temperature,
-            max_tokens=parsed_args.max_tokens,
-        )
-        term.run()
+        try:
+            term = QllamaTerminal(
+                model_name=parsed_args.model,
+                device=parsed_args.device,
+                temperature=parsed_args.temperature,
+                max_tokens=parsed_args.max_tokens,
+            )
+            term.run()
+        except ImportError as e:
+            if "PIL" in str(e) or "_imaging" in str(e):
+                print("\nError: PIL (Pillow) is not properly installed.")
+                print("This is most likely due to missing system dependencies.")
+                print("\nTry fixing with this command:")
+                print("    pip uninstall -y pillow && pip install --no-cache-dir pillow")
+                print("\nOr run the fix script:")
+                script_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 
+                                          "scripts", "fix_pillow.sh")
+                print(f"    bash {script_path}")
+                print("\nIf that doesn't work, you may need to install system dependencies:")
+                print("    Ubuntu/Debian: sudo apt-get install python3-dev libjpeg-dev libfreetype6-dev zlib1g-dev")
+                print("    CentOS/RHEL: sudo yum install python3-devel libjpeg-devel freetype-devel zlib-devel")
+                sys.exit(1)
+            else:
+                # Re-raise if it's not a PIL-related issue
+                raise
     elif parsed_args.command == "list":
-        from qllama.models import MODEL_REGISTRY
-        print("Available models:")
-        for model in MODEL_REGISTRY:
-            print(f"  - {model}")
+        try:
+            from qllama.models import MODEL_REGISTRY
+            print("Available models:")
+            for model in MODEL_REGISTRY:
+                print(f"  - {model}")
+        except ImportError as e:
+            if "PIL" in str(e) or "_imaging" in str(e):
+                print("\nError: PIL (Pillow) is not properly installed.")
+                print("Run 'pip uninstall -y pillow && pip install --no-cache-dir pillow' to fix the issue.")
+                sys.exit(1)
+            else:
+                raise
     elif parsed_args.command == "help" or parsed_args.command is None:
         parse_args(["--help"])
     else:

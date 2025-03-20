@@ -9,6 +9,7 @@ import readline
 import shlex
 
 from qllama.models import get_model_handler
+from qllama.deps import check_and_report
 
 _logger = logging.getLogger(__name__)
 
@@ -30,6 +31,10 @@ class QllamaTerminal:
             temperature: Temperature for generation
             max_tokens: Maximum tokens to generate
         """
+        # Check dependencies first
+        if not check_and_report():
+            sys.exit(1)
+            
         self.model_name = model_name
         self.device = device
         self.temperature = temperature
