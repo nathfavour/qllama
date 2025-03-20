@@ -5,6 +5,8 @@ Changelog
 Version 0.1
 ===========
 
-- Feature A added
-- FIX: nasty bug #1729 fixed
-- add your changes here!
+- Initial release
+- Command-line interface for interacting with LLMs and multimodal models
+- Support for SmolVLM2 model
+- Support for text, image, and video inputs
+- Terminal-based chat interface
