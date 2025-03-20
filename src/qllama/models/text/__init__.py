@@ -1,2 +1,3 @@
 """Text models package for qllama."""
-# Will contain text-only model handlers
+# Import handlers so they're registered with the MODEL_REGISTRY
+from .mistral import MistralHandler

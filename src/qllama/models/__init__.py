@@ -10,6 +10,7 @@ _logger = logging.getLogger(__name__)
 
 MODEL_REGISTRY = {
     "smolvlm2": "qllama.models.vision.smolvlm.SmolVLMHandler",
+    "mistral": "qllama.models.text.mistral.MistralHandler",
     # Add more models here as they're implemented
 }
 
